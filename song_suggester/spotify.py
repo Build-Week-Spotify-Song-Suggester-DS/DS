@@ -64,7 +64,8 @@ def find_track_info(track_id):
     return result
 
 
-def new_hip_tracks():
+def new_tracks():
+    # WIP
     '''Returns a list of 1000 tracks
        stored in dictionaries containing
        id, name, artists, album, and
@@ -76,7 +77,7 @@ def new_hip_tracks():
                            type='track',
                            limit=50,
                            offset=i)  # ['tracks']['items']
-        print(result)
+        # print(result)
         for track in result:
             tracks.append(find_track_info(track['id']))
     return tracks
