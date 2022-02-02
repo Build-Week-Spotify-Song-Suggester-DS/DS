@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from os import getenv
 from .models import DB, Track
-from .spotify import search_tracks, find_track_info, new_hip_tracks
+from .spotify import search_tracks, find_track_info, new_tracks
 
 
 def create_app():
@@ -108,7 +108,7 @@ def create_app():
         try:
             Track.query.filter(Track.preference == False).delete()
             # get new songs from DB
-            for track in new_hip_tracks():
+            for track in new_tracks():
                 new_track = Track(id=track['id'],
                                   preference=False,
                                   name=track['name'],
