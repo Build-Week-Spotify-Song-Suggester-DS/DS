@@ -2,11 +2,6 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from os import getenv
 
-# Spotify API Info
-# Accessing it:
-# https://medium.com/@maxtingle/getting-started-with-spotifys-api-spotipy-197c3dc6353b
-# https://developer.spotify.com/documentation/web-api/reference/#/operations/search
-
 CLIENT_ID = getenv('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = getenv('SPOTIFY_CLIENT_SECRET')
 

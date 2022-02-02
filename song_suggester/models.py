@@ -5,8 +5,6 @@ DB = SQLAlchemy()
 
 class Track(DB.Model):
 
-    # https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features
-
     id = DB.Column(DB.String, primary_key=True, nullable=False)
 
     preference = DB.Column(DB.Boolean, nullable=False)
