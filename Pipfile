@@ -10,6 +10,7 @@ python-dotenv = "*"
 flask-sqlalchemy = "*"
 gunicorn = "*"
 numpy = "*"
+pandas = "*"
 
 [dev-packages]
 autopep8 = "*"

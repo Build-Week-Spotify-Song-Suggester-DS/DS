@@ -34,7 +34,8 @@ def create_app():
                 track_search = request.values['track_search']
                 artist_search = request.values['artist_search']
                 search_results = search_tracks(artist=artist_search,
-                                               name=track_search)
+                                               name=track_search,
+                                               n_tracks=100)
 
             # Preference Form
             if 'track_preference' in request.form:
@@ -88,7 +89,7 @@ def create_app():
 
     # POPULATE ****************************************************************************
     @app.route('/populate')
-    def populate(num_tracks=20):
+    def populate(num_tracks=1000):
         '''Populates Tracks in Database'''
 
         update_tracks_in_db(num_tracks)

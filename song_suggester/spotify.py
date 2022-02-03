@@ -12,7 +12,7 @@ client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 
-def search_tracks(n_tracks=10, artist=None, name=None):
+def search_tracks(n_tracks=100, artist=None, name=None):
     '''Returns a list of dictionaries
        Each dictionary contains a track's
        id, name, artists, and album
@@ -103,13 +103,13 @@ def find_track_info(track_id):
 
 
 def add_track_to_db(track_id, preference=False):
+    '''Returns 0 if failed to add, 1 if successfully added'''
+    added = 0
     try:
         # spotify keeps giving song duplicates...
         # this check doesn't even work half the time
         # no idea what is going on, server/DB issues?
         already_exists = Track.query.filter(Track.id == track_id).all()
-        # print("Track_ID:", track_id)
-        # print("Query: ", already_exists)
         if already_exists:
             print(f'{track_id} already in database, skipping...')
         else:
@@ -128,8 +128,9 @@ def add_track_to_db(track_id, preference=False):
         pass
     else:
         DB.session.commit()
+        added = 1
 
-    return
+    return added
 
 
 def update_tracks_in_db(num_tracks=1000):
@@ -157,9 +158,9 @@ def update_tracks_in_db(num_tracks=1000):
     j = 0  # number of albums looked at
     while i < num_tracks:
         # Find Hipster Albums
-        albums = sp.search(q="tag:hipster",
+        albums = sp.search(q="tag:hipster tag:new",
                            type='album',
-                           limit=10,
+                           limit=50,
                            offset=j)['albums']['items']
         # Find Tracks in each Album
         for album in albums:
@@ -167,8 +168,7 @@ def update_tracks_in_db(num_tracks=1000):
                                      limit=max_tracks_per_album)['items']
             # Add each Track to Database
             for result in tracks:
-                add_track_to_db(track_id=result['id'])
-                i += 1
+                i += add_track_to_db(track_id=result['id'])
                 # stops searching tracks after num_tracks
                 if i >= num_tracks:
                     break
@@ -176,5 +176,5 @@ def update_tracks_in_db(num_tracks=1000):
             if i >= num_tracks:
                 break
         # Update offset index for next set of albums
-        j += 10
+        j += 50
     return
