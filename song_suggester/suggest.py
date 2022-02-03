@@ -1,6 +1,8 @@
+from turtle import distance
 from .models import DB, Track
 import numpy as np
 import pandas as pd
+from scipy.spatial.distance import cosine as cosine_similarity
 
 
 def update_recommendation_values():
@@ -33,17 +35,3 @@ def update_recommendation_values():
             row['library_offset']).first().recommend = row['recommendation_value']
 
     return
-
-
-def cosine_similarity(vector_a, vector_b):
-    # ALWAYS RETURNS 1
-    # dot = np.dot(vector_a, vector_b)
-    # norm_a = np.linalg.norm(vector_a)
-    # norm_b = np.linalg.norm(vector_b)
-    # cs = dot / (norm_a * norm_b)
-    # print('cosine similarity 1:', cs)
-
-    cs = np.random.random()
-    # print('cosine similarity:', cs)
-
-    return cs
