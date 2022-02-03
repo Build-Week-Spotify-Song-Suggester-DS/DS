@@ -3,40 +3,22 @@ from flask_sqlalchemy import SQLAlchemy
 DB = SQLAlchemy()
 
 
-class Characteristics(DB.Model):
-    '''displays characteristics of a track'''
-    id = DB.Column(DB.BigInteger, primary_key=True, nullable=False)
-    acousticness = DB.Column(DB.Float, nullable=False)
-    danceability = DB.Column(DB.Float, nullable=False)
-    energy = DB.Column(DB.Float, nullable=False)
-    instrumentalness = DB.Column(DB.Float, nullable=False)
-    duration_ms = DB.Column(DB.Integer, nullable=False)
-    key = DB.Column(DB.Integer, nullable=False)
-    liveness = DB.Column(DB.Float, nullable=False)
-    loudness = DB.Column(DB.Float, nullable=False)
-    mode = DB.Column(DB.Integer, nullable=False)
-    speechiness = DB.Column(DB.Float, nullable=False)
-    tempo = DB.Column(DB.Float, nullable=False)
-    time_signature = DB.Column(DB.Float, nullable=False)
-    valence = DB.Column(DB.Float, nullable=False)
-
-
-class Artist(DB.Model):
-    '''displays artist'''
-    id = DB.Column(DB.BigInteger, primary_key=True, nullable=False)
-    artist = DB.Column(DB.String, nullable=False)
-
-
 class Track(DB.Model):
-    '''displays track'''
-    id = DB.Column(DB.BigInteger, primary_key=True, nullable=False)
-    track = DB.Column(DB.String, nullable=False)
-    artist_id = DB.Column(DB.BigInteger, DB.ForeignKey(
-        'artist.id'), nullable=False)
-    artist = DB.relationship("Artist", backref=DB.backref('tracks'), lazy=True)
 
-    vect = DB.Column(DB.PickleType, nullable=False)
+    # required variables
+    id = DB.Column(DB.String, primary_key=True, nullable=False)
+    preference = DB.Column(DB.Boolean, nullable=False)
+    name = DB.Column(DB.String, nullable=False)
+    artists = DB.Column(DB.String, nullable=False)
+    vector = DB.Column(DB.PickleType, nullable=False)
 
+    # variable to be updated when user asks for recommendations
+    recommend = DB.Column(DB.Float)
 
-
-
+    def __repr__(self):
+        as_string = f'{self.name} - {self.artists}'
+        # for testing:
+        # as_string = f'{self.name} - {self.artists} - {self.vector}'
+        # if self.recommend and self.preference is False:
+        #     as_string += f' - {self.recommend}'
+        return as_string
