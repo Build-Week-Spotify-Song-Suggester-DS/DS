@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 from os import getenv
-from .models import *
-from .spotify import *
-from .suggest import *
+from models import *
+from spotify import *
+from suggest import *
 
 
 def create_app():
