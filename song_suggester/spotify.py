@@ -2,6 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from os import getenv
 from .models import DB, Track
+import numpy as np
 
 CLIENT_ID = getenv('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = getenv('SPOTIFY_CLIENT_SECRET')
@@ -11,12 +12,15 @@ client_credentials_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 
-def search_tracks(artist=None, name=None):
+def search_tracks(n_tracks=10, artist=None, name=None):
     '''Returns a list of dictionaries
        Each dictionary contains a track's
        id, name, artists, and album
     '''
     tracks = []
+
+    # track limit
+    n_tracks = min(n_tracks, 1000)
 
     # generate query string
     query = ''
@@ -34,7 +38,7 @@ def search_tracks(artist=None, name=None):
     # results are limited to 1000 items
     #  and each search will only return 50 items
     #  so we have to loop over them with an offset index
-
+    n = 0  # number of tracks found
     for i in range(0, 1000, 50):
         result = sp.search(q=query,
                            type='track',
@@ -45,54 +49,87 @@ def search_tracks(artist=None, name=None):
                            'name': track['name'],
                            'artists': track['artists'][0]['name'],
                            'album': track['album']['name']})
-
+            n += 1
+            # stops looking at songs if enough were found
+            if n >= n_tracks:
+                break
         # stops querying if spotify is out of results
-        if len(result) < 50:
+        # or if enough tracks were found
+        if len(result) < 50 or n >= n_tracks:
             break
     return tracks
 
 
 def find_track_info(track_id):
-    '''Returns dictionary with information about the track'''
+    '''Returns a tuple with information about the track
+       (name_of_track, track_artists, audio_features)
+       name_of_track --- string
+       track_artists -- string
+       audio_features -- numpy array containing
+            audio features in alphabetic order:
+                acousticness
+                danceability
+                duration_ms
+                energy
+                instrumentalness
+                key
+                liveness
+                loudness
+                mode
+                speechiness
+                tempo
+                time_signature
+                valence
+    '''
     result = sp.audio_features(track_id)[0]
-    result['name'] = sp.track(track_id)['name']
-    result['artists'] = sp.track(track_id)['artists'][0]['name']
-    return result
+    vector = np.array([
+        result['acousticness'],
+        result['danceability'],
+        result['duration_ms'],
+        result['energy'],
+        result['instrumentalness'],
+        result['key'],
+        result['liveness'],
+        result['loudness'],
+        result['mode'],
+        result['speechiness'],
+        result['tempo'],
+        result['time_signature'],
+        result['valence']
+    ])
+    name = sp.track(track_id)['name']
+    artists = sp.track(track_id)['artists'][0]['name']
+    return name, artists, vector
 
 
 def add_track_to_db(track_id, preference=False):
     try:
-
+        # spotify keeps giving song duplicates...
+        # this check doesn't even work half the time
+        # no idea what is going on, server/DB issues?
         already_exists = Track.query.filter(Track.id == track_id).all()
+        # print("Track_ID:", track_id)
+        # print("Query: ", already_exists)
         if already_exists:
             print(f'{track_id} already in database, skipping...')
         else:
-            other_info = find_track_info(track_id)
+            name, artists, vector = find_track_info(track_id)
 
-            new_preference = Track(id=track_id,
-                                   preference=preference,
-                                   name=other_info['name'],
-                                   artists=other_info['artists'],
-                                   danceability=other_info['danceability'],
-                                   energy=other_info['energy'],
-                                   key=other_info['key'],
-                                   loudness=other_info['loudness'],
-                                   mode=other_info['mode'],
-                                   speechiness=other_info['speechiness'],
-                                   acousticness=other_info['acousticness'],
-                                   instrumentalness=other_info['instrumentalness'],
-                                   liveness=other_info['liveness'],
-                                   valence=other_info['valence'],
-                                   tempo=other_info['tempo'],
-                                   duration_ms=other_info['duration_ms'],
-                                   time_signature=other_info['time_signature'])
-            DB.session.add(new_preference)
+            new_track = Track(id=track_id,
+                              preference=preference,
+                              name=name,
+                              artists=artists,
+                              vector=vector)
+
+            DB.session.add(new_track)
 
     except Exception as error:
-        print(f"Could not add {other_info['name']} to database: {error}")
-        raise error
+        print(f"Could not add {track_id} to database: {error}")
+        pass
     else:
         DB.session.commit()
+
+    return
 
 
 def update_tracks_in_db(num_tracks=1000):

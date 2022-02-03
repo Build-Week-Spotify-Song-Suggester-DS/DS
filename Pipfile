@@ -4,12 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-notebook = "*"
 flask = "*"
 spotipy = "*"
 python-dotenv = "*"
 flask-sqlalchemy = "*"
 gunicorn = "*"
+numpy = "*"
 
 [dev-packages]
 autopep8 = "*"
