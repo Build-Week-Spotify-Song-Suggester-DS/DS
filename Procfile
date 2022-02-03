@@ -1,0 +1,1 @@
+web: gunicorn SpotifySongSuggester:APP -t 120
