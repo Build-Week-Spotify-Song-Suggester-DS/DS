@@ -5,8 +5,16 @@ name = "pypi"
 
 [packages]
 flask = "*"
+spotipy = "*"
+python-dotenv = "*"
+flask-sqlalchemy = "*"
+gunicorn = "*"
+numpy = "*"
+pandas = "*"
+scipy = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
-python_version = "3.8.8"
+python_version = "3.9"
