@@ -16,7 +16,9 @@ class Track(DB.Model):
     recommend = DB.Column(DB.Float)
 
     def __repr__(self):
-        as_string = f'{self.name} - {self.artists} - {self.vector}'
-        if self.recommend and self.preference is False:
-            as_string += f' - {self.recommend}'
+        as_string = f'{self.name} - {self.artists}'
+        # for testing:
+        # as_string = f'{self.name} - {self.artists} - {self.vector}'
+        # if self.recommend and self.preference is False:
+        #     as_string += f' - {self.recommend}'
         return as_string
