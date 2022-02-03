@@ -1,4 +1,3 @@
-from turtle import distance
 from .models import DB, Track
 import numpy as np
 import pandas as pd
