@@ -21,11 +21,11 @@ You will need to click on "CREATE AN APP" to obtain access.
 If you wish to run this app locally, you will need to install dependencies via requirements.txt
 
 # Authors:
-<a href="https://github.com/daythan">Nathan Dandoy</a><br>
 <a href="https://github.com/ScottAllenJefferys">Scott Jefferys</a><br>
+<a href="https://github.com/fabiolavelasco">Fabiola Velasco</a><br> 
 <a href="https://github.com/allielcox">Allie Cox</a><br>
 <a href="https://github.com/bradwbaker">Bradley Baker</a><br>
-<a href="https://github.com/fabiolavelasco">Fabiola Velasco</a> 
+<a href="https://github.com/daythan">Nathan Dandoy</a><br>
 
 # License: 
 This project is licensed under the MIT License - see the LICENSE.txt file for details
